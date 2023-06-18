@@ -25,7 +25,7 @@ from einop import einop
 a = np.random.uniform(size=(10, 20))
 b = np.random.uniform(size=(20, 15))
 
-y = einop(x, "a b, b c -> a c") # matrix multiplication
+y = einop(a, b, "a b, b c -> a c") # matrix multiplication
 
 assert y.shape == (10, 15)
 ```

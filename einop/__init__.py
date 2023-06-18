@@ -14,32 +14,39 @@ A = TypeVar("A")
 def _match_einop(pattern: str, reduction=None, **axes_lengths: int):
     """Find the corresponding operation matching the pattern"""
     left, rght = pattern.split("->")
-    left = ParsedExpression(left)
-    rght = ParsedExpression(rght)
 
-    default_op = "rearrange"
-    op = default_op
+    if "," not in left:
+        left = ParsedExpression(left)
+        rght = ParsedExpression(rght)
 
-    for index in left.identifiers:
-        if index not in rght.identifiers:
-            op = "reduce"
-            break
+        default_op = "rearrange"
+        op = default_op
 
-    for index in rght.identifiers:
-        if index not in left.identifiers:
-            if op != default_op:
-                raise EinopsError(
-                    "You must perform a reduce and repeat separately: {}".format(
-                        pattern
+        for index in left.identifiers:
+            if index not in rght.identifiers:
+                op = "reduce"
+                break
+
+        for index in rght.identifiers:
+            if index not in left.identifiers:
+                if op != default_op:
+                    raise EinopsError(
+                        "You must perform a reduce and repeat separately: {}".format(
+                            pattern
+                        )
                     )
-                )
-            op = "repeat"
-            break
+                op = "repeat"
+                break
+    else:
+        op = "einsum"
 
     return op
 
 
-def einop(tensor: A, pattern: str, reduction=None, **axes_lengths: int) -> A:
+def einop(tensor: A, *args, reduction=None, **axes_lengths: int) -> A:
+    pattern = args[-1]
+    assert isinstance(pattern, str)
+
     """Perform either reduce, rearrange, or repeat depending on pattern"""
     op = _match_einop(pattern, reduction, **axes_lengths)
 
@@ -50,18 +57,34 @@ def einop(tensor: A, pattern: str, reduction=None, **axes_lengths: int) -> A:
                     pattern
                 )
             )
+        assert tensor is not None
         return einops.rearrange(tensor, pattern, **axes_lengths)
     elif op == "reduce":
         if reduction is None:
             raise EinopsError(
                 "Missing reduction operation for reduce pattern: {}".format(pattern)
             )
+
+        assert tensor is not None
         return einops.reduce(tensor, pattern, reduction, **axes_lengths)
     elif op == "repeat":
         if reduction is not None:
             raise EinopsError(
                 "Do not pass reduction for repeat pattern: {}".format(pattern)
             )
+        assert tensor is not None
         return einops.repeat(tensor, pattern, **axes_lengths)
+    elif op == "einsum":
+        if reduction is not None:
+            raise EinopsError(
+                "Do not pass reduction for repeat pattern: {}".format(pattern)
+            )
+        if len(axes_lengths) > 0:
+            raise EinopsError(
+                "Do not pass axis lengths for einsum pattern: {}".format(pattern)
+            )
+        tensors = (tensor,) + args[:-1]
+        return einops.einsum(*tensors, pattern)
+
     else:
         raise ValueError(f"Unknown operation: {op}")
