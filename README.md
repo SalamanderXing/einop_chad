@@ -1,4 +1,4 @@
-# Einop
+# Einop Chad
 
 _One chad op to rule them all_
 
