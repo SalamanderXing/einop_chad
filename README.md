@@ -11,6 +11,8 @@ Almost exactly like [Einop](https://github.com/cgarciae/einop) but it also suppo
 
 git clone https://github.com/SalamanderXing/einop_chad
 
+cd einop_chad
+
 pip install einop_chad
 ```
 
