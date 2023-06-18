@@ -1,22 +1,33 @@
 # Einop
 
-_One op to rule them all_
+_One chad op to rule them all_
 
-Einop is a very thin wrapper around [einops](https://github.com/arogozhnikov/einops) that combines `rearrange`, `reduce`, and `repeat` into a single `einop` function. This library is a port of [arogozhnikov/einops#91](https://github.com/arogozhnikov/einops/pull/91) by [Miles Cranmer](https://github.com/MilesCranmer) into a separate library, if at some point that PR is merged use `einop` directly from einops instead.
+
+Almost exactly like [Einop](https://github.com/cgarciae/einop) but it also supports `einsum`.
+
 
 ## Installation
 ```
-pip install einop
+
+git clone https://github.com/SalamanderXing/einop_chad
+
+pip install einop_chad
 ```
+
 ## Usage
+
+#### Einsum
+
 ```python
 import numpy as np
 from einop import einop
 
-x = np.random.uniform(size=(10, 20))
-y = einop(x, "height width -> batch width height", batch=32)
+a = np.random.uniform(size=(10, 20))
+b = np.random.uniform(size=(20, 15))
 
-assert y.shape == (32, 20, 10)
+y = einop(x, "a b, b c -> a c") # matrix multiplication
+
+assert y.shape == (10, 15)
 ```
 
 #### Rearrange
