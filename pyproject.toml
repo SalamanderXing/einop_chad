@@ -1,15 +1,15 @@
 [tool.poetry]
-name = "einop"
+name = "einop_chad"
 version = "0.0.1"
 description = ""
-authors = ["Cristian Garcia <cgarcia.e88@gmail.com>"]
+authors = ["Giulio Zani <giulio.zani@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/cgarciae/einop"
-homepage = "https://cgarciae.github.io/einop"
+repository = "https://github.com/salamanderxing/einop_chad"
+homepage = "https://github.com/salamanderxing/einop_chad"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 einops = ">=0.4.0"
 
 
