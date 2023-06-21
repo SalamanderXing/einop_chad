@@ -21,7 +21,7 @@ pip install einop_chad
 #### Einsum
 
 ```python
-import numpy as np
+import numpy as np # or torch, tensorflow, JAX ...
 from einop import einop
 
 a = np.random.uniform(size=(10, 20))
